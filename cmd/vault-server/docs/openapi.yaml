@@ -303,7 +303,7 @@ components:
         id:
           description: The identifier to associate with the document. This may be any unique string to identify the document in the vault.
           type: string
-          example: "'batphone' or 'apple_pie_recipe' or '' 
+          example: "'batphone' or 'apple_pie_recipe' or 'x325519bpr'" 
         content:
           description: The JSON document to be encrypted and stored in the vault.
           type: object
@@ -318,27 +318,31 @@ components:
           description: The document ID of the stored document. MUST match the input 'id'.
         edvDocURI:
           type: string
-          description: Unique URI for the document. This maybe ignored by the Client but maybe useful for auditing. 
+          description: Unique URI for the document. This may be ignored by the Client but might be useful for auditing. 
     Authorization:
-      description: An authorization.
+      description: An authorization object for an entity to request a document in a Vault.
       type: object
       required:
         - scope
         - requestingParty
       properties:
         id:
+          description: a unique ID for this authorization. This will be ignored (and may be omitted) on input, but populated on output. 
           type: string
         scope:
           $ref: "#/components/schemas/Scope"
         requestingParty:
-          description: keyID
+          description: keyID (DID) for the party able to use this authorization.
           type: string
         authTokens:
           type: object
+          description: the resulting authorization token(s). These are opaque to the client. These will be ignored if provided as input parameters.
           properties:
             edv:
               type: string
+              description: the authorization token to access the document in the vault. Opaque for the client.
             kms:
+              description: the authorization to access the decryption key in the KMS for the document. Opaque to the client.
               type: string
     Scope:
       type: object
@@ -347,15 +351,19 @@ components:
         - actions
       properties:
         target:
+          description: The target document ID.
           type: string
         targetAttr:
+          description: a JSON path subset of the document to operate on.
           type: string
         actions:
           type: array
+          description: the array of authorized action, like 'read' and 'write'.
           items:
             type: string
         caveats:
           type: array
+          description: a list of limitations or exceptions to the authorization; for example and expiry time.
           items:
             $ref: "#/components/schemas/Caveat"
     Caveat:
@@ -382,3 +390,4 @@ components:
       properties:
         errMessage:
           type: string
+          description: The human consumable error message.
