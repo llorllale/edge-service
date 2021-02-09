@@ -15,13 +15,13 @@ paths:
     post:
       tags:
         - required
-      description: Creates a new vault.
+      description: Creates a new vault and DID for controlling the vault.
       responses:
         201:
-          description: Vault created successfully.
+          description: Vault created successfully. The DID used to reference and control the valut will be returned. The EDV and KMS details may be ignored but maybe useful for auditing purposes.
           headers:
             Location:
-              description: Location of the vault
+              description: Location of the vault.
               schema:
                 type: string
           content:
@@ -49,7 +49,7 @@ paths:
       description: Deletes an existing vault.
       responses:
         200:
-          description: Vault deleted.
+          description: Vault deleted. All contents of the vault have been purged and the controlling DID deactivated. 
         404:
           description: Vault does not exist.
           content:
@@ -69,6 +69,7 @@ paths:
         required: true
         schema:
           type: string
+        description: The ID of the vault (DID from the create method).
     post:
       tags:
         - required
@@ -80,9 +81,9 @@ paths:
             schema:
               $ref: "#/components/schemas/Document"
             example: {
-              "id": "did:example:123",
+              "id": "batphone",
               "content": {
-                "my_attribute": "my_data"
+                "phone_number": "+12125557972"
               }
             }
       responses:
@@ -122,11 +123,13 @@ paths:
         schema:
           type: string
         required: true
+        description: The unique vault ID (DID from the create method).
       - in: path
         name: docID
         schema:
           type: string
         required: true
+        description: The unique document ID ('id' from the Document create/update method)
     get:
       description: Metadata about a stored document.
       responses:
@@ -155,10 +158,11 @@ paths:
         schema:
           type: string
         required: true
+        description: The unique vault ID (DID from the create method).
     post:
       tags:
         - required
-      description: Create an authorization.
+      description: Create an authorization for a party to gain access to a document in a vault for the stated purposes. The details will be cached in the Vault Server, but the Client must manage the ID.
       requestBody:
         required: true
         content:
@@ -167,7 +171,7 @@ paths:
               $ref: "#/components/schemas/Authorization"
             example: {
               "scope": {
-                "target": "did:example:123",
+                "target": "batphone",
                 "actions": ["read"],
                 "caveats": [
                   {
@@ -176,14 +180,14 @@ paths:
                   }
                 ]
               },
-              "requestingParty": "did:example:other_party"
+              "requestingParty": "did:example:phone_dialer_47583"
             }
       responses:
         201:
           description: Authorization created.
           headers:
             Location:
-              description: Location of the authorization
+              description: Location of the authorization.
               schema:
                 type: string
           content:
@@ -191,9 +195,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Authorization"
               example: {
-                "id": "123",
+                "id": "AuZiD123",
                 "scope": {
-                  "target": "did:example:123",
+                  "target": "batphone",
                   "actions": ["read"],
                   "caveats": [
                     {
@@ -202,7 +206,7 @@ paths:
                     }
                   ]
                 },
-                "requestingParty": "did:example:other_party",
+                "requestingParty": "did:example:phone_dialer_47583",
                 "authTokens": {
                   "edv": "21tDAKCERh95uGgKbJNHYp",
                   "kms": "bcehfew7h32f32h7af3"
@@ -227,11 +231,13 @@ paths:
         schema:
           type: string
         required: true
+        description: unique identifier for the vault.
       - in: path
         name: authorizationID
         schema:
           type: string
         required: true
+        description: The 'id' returned from the authorization call.
     get:
       description: Fetch an authorization.
       responses:
@@ -275,14 +281,18 @@ components:
           properties:
             uri:
               type: string
-            authToken:
+              description: The unique URI to access the vault.
+            authToken: 
+              description: authorization object assigned to the DID to access the vault. These are opaque to the Client.
               type: string
         kms:
           type: object
           properties:
             uri:
               type: string
+              description: The unique URI to access the encryption keys.
             authToken:
+              description: authorization object assigned to the DID to access encryption keys. These are opaque to the Client.
               type: string
     Document:
       type: object
@@ -291,10 +301,11 @@ components:
         - content
       properties:
         id:
-          description: The identifier to associate with the document.
+          description: The identifier to associate with the document. This may be any unique string to identify the document in the vault.
           type: string
+          example: "'batphone' or 'apple_pie_recipe' or '' 
         content:
-          description: The document to be encrypted and stored in the vault.
+          description: The JSON document to be encrypted and stored in the vault.
           type: object
     DocumentMetadata:
       type: object
@@ -304,8 +315,10 @@ components:
       properties:
         docID:
           type: string
+          description: The document ID of the stored document. MUST match the input 'id'.
         edvDocURI:
           type: string
+          description: Unique URI for the document. This maybe ignored by the Client but maybe useful for auditing. 
     Authorization:
       description: An authorization.
       type: object
