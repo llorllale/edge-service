@@ -301,7 +301,7 @@ components:
         - content
       properties:
         id:
-          description: The identifier to associate with the document. This may be any unique string to identify the document in the vault.
+          description: The client identifier to associate with the document. This may be any unique string to identify the document in the vault. Note this will be mapped to a EDV compliant document identifier (128-bit random) by the Vault Server.
           type: string
           example: "'batphone' or 'apple_pie_recipe' or 'x325519bpr'" 
         content:
@@ -318,7 +318,7 @@ components:
           description: The document ID of the stored document. MUST match the input 'id'.
         edvDocURI:
           type: string
-          description: Unique URI for the document. This may be ignored by the Client but might be useful for auditing. 
+          description: Unique URI for the document. This may be ignored by the Client but might be useful for auditing. This will contain the EDV - document ID.
     Authorization:
       description: An authorization object for an entity to request a document in a Vault.
       type: object
