@@ -25,7 +25,7 @@ paths:
               "requestingParty": "did:example:other_party",
               "scope": [
                 {
-                  "docID": "did:example:123",
+                  "docID": "batphone",
                   "actions": ["compare"],
                   "caveats": [
                     {
@@ -50,7 +50,7 @@ paths:
                 $ref: "#/components/schemas/Authorization"
               example: {
                 "id": "123456",
-                "requestingParty": "did:example:other_party",
+                "requestingParty": "did:example:",
                 "scope": [
                   {
                     "docID": "did:example:123",
@@ -173,12 +173,13 @@ components:
       properties:
         id:
           type: string
+          description: A unique ID for the authorization. Ignored on input, populated on output.
         scope:
           type: array
           items:
             $ref: "#/components/schemas/Scope"
         requestingParty:
-          description: requesting party DID
+          description: requesting party DID, for example the entity doing 
           type: string
         authToken:
           type: string

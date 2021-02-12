@@ -162,7 +162,7 @@ paths:
     post:
       tags:
         - required
-      description: Create an authorization for a party to gain access to a document in a vault for the stated purposes. The details will be cached in the Vault Server, but the Client must manage the ID.
+      description: Create an authorization for a party to gain access to a document in a vault for the stated purposes. The result details (tokens etc...) will be cached in the Vault Server, but the Client must manage the ID.
       requestBody:
         required: true
         content:
