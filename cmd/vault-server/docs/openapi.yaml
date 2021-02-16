@@ -332,7 +332,7 @@ components:
         scope:
           $ref: "#/components/schemas/Scope"
         requestingParty:
-          description: keyID (DID) for the party able to use this authorization.
+          description: keyID (DID) for the party able to use this authorization (for example, the application that can read the data).
           type: string
         authTokens:
           type: object

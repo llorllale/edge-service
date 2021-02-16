@@ -15,6 +15,7 @@ paths:
     post:
       tags:
         - required
+      description: Authorize a third party to perform a comparison operation on a document ID.
       requestBody:
         required: true
         content:
@@ -22,7 +23,7 @@ paths:
             schema:
               $ref: "#/components/schemas/Authorization"
             example: {
-              "requestingParty": "did:example:other_party",
+              "requestingParty": "did:example:party_doing_comparison",
               "scope": [
                 {
                   "docID": "batphone",
@@ -50,10 +51,10 @@ paths:
                 $ref: "#/components/schemas/Authorization"
               example: {
                 "id": "123456",
-                "requestingParty": "did:example:",
+                "requestingParty": "did:example:party_doing_comparison",
                 "scope": [
                   {
-                    "docID": "did:example:123",
+                    "docID": "batphone",
                     "actions": [ "compare" ],
                     "caveats": [
                       {
@@ -69,6 +70,7 @@ paths:
     post:
       tags:
         - required
+      description: Compare the contents of the provided EDV documents identified in the authorization tokens.
       requestBody:
         required: true
         content:
@@ -110,6 +112,7 @@ paths:
     post:
       tags:
         - required
+      description: Extract the raw contents of the EDV documents identified in the authorization tokens.
       requestBody:
         required: true
         content:
@@ -164,7 +167,7 @@ paths:
 components:
   schemas:
     Authorization:
-      description: An authorization.
+      description: An authorization to permit a requesting party to perform an action on a document in the EDV.
       type: object
       required:
         - scope
@@ -176,12 +179,14 @@ components:
           description: A unique ID for the authorization. Ignored on input, populated on output.
         scope:
           type: array
+          description: a list of permitted actions on the document.
           items:
             $ref: "#/components/schemas/Scope"
         requestingParty:
-          description: requesting party DID, for example the entity doing 
+          description: requesting party DID, for example the entity doing the comparison.
           type: string
         authToken:
+          description: The (opaque) authorization token that may be passed to the requesting party to authorize the action.
           type: string
     Scope:
       type: object
