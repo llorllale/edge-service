@@ -27,6 +27,7 @@ paths:
               "scope": [
                 {
                   "docID": "batphone",
+                  "vaultID": "batcave",
                   "actions": ["compare"],
                   "caveats": [
                     {

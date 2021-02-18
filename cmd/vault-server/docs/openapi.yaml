@@ -18,7 +18,10 @@ paths:
       description: Creates a new vault and DID for controlling the vault.
       responses:
         201:
-          description: Vault created successfully. The DID used to reference and control the valut will be returned. The EDV and KMS details may be ignored but maybe useful for auditing purposes.
+          description: |
+            Vault created successfully.
+            The DID used to reference and control the valut will be returned.
+            The EDV and KMS details may be ignored but may be useful for auditing purposes.
           headers:
             Location:
               description: Location of the vault.
@@ -49,7 +52,7 @@ paths:
       description: Deletes an existing vault.
       responses:
         200:
-          description: Vault deleted. All contents of the vault have been purged and the controlling DID deactivated. 
+          description: Vault deleted. All contents of the vault have been purged and the controlling DID deactivated.
         404:
           description: Vault does not exist.
           content:
@@ -162,7 +165,9 @@ paths:
     post:
       tags:
         - required
-      description: Create an authorization for a party to gain access to a document in a vault for the stated purposes. The result details (tokens etc...) will be cached in the Vault Server, but the Client must manage the ID.
+      description: |
+        Create an authorization for a party to gain access to a document in a vault for the stated purposes.
+        The result details (tokens etc...) will be cached in the Vault Server, but the Client must manage the ID.
       requestBody:
         required: true
         content:
@@ -282,8 +287,8 @@ components:
             uri:
               type: string
               description: The unique URI to access the vault.
-            authToken: 
-              description: authorization object assigned to the DID to access the vault. These are opaque to the Client.
+            authToken:
+              description: Authorization object assigned to the DID to access the vault. These are opaque to the Client.
               type: string
         kms:
           type: object
@@ -292,7 +297,8 @@ components:
               type: string
               description: The unique URI to access the encryption keys.
             authToken:
-              description: authorization object assigned to the DID to access encryption keys. These are opaque to the Client.
+              description: |
+                Authorization object assigned to the DID to access encryption keys. These are opaque to the Client.
               type: string
     Document:
       type: object
@@ -301,9 +307,12 @@ components:
         - content
       properties:
         id:
-          description: The client identifier to associate with the document. This may be any unique string to identify the document in the vault. Note this will be mapped to a EDV compliant document identifier (128-bit random) by the Vault Server.
+          description: |
+            The client identifier to associate with the document.
+            This may be any unique string to identify the document in the vault.
+            Note this will be mapped to a EDV compliant document identifier (128-bit random) by the Vault Server.
           type: string
-          example: "'batphone' or 'apple_pie_recipe' or 'x325519bpr'" 
+          example: "'batphone' or 'apple_pie_recipe' or 'x325519bpr'"
         content:
           description: The JSON document to be encrypted and stored in the vault.
           type: object
@@ -318,7 +327,10 @@ components:
           description: The document ID of the stored document. MUST match the input 'id'.
         edvDocURI:
           type: string
-          description: Unique URI for the document. This may be ignored by the Client but might be useful for auditing. This will contain the EDV - document ID.
+          description: |
+            Unique URI for the document.
+            This may be ignored by the Client but might be useful for auditing.
+            This will contain the EDV - document ID.
     Authorization:
       description: An authorization object for an entity to request a document in a Vault.
       type: object
@@ -327,22 +339,28 @@ components:
         - requestingParty
       properties:
         id:
-          description: a unique ID for this authorization. This will be ignored (and may be omitted) on input, but populated on output. 
+          description: |
+            A unique ID for this authorization.
+            This will be ignored (and may be omitted) on input, but populated on output.
           type: string
         scope:
           $ref: "#/components/schemas/Scope"
         requestingParty:
-          description: keyID (DID) for the party able to use this authorization (for example, the application that can read the data).
+          description: |
+            KeyID (DID) for the party able to use this authorization (for example, the application that can read the data).
           type: string
         authTokens:
           type: object
-          description: the resulting authorization token(s). These are opaque to the client. These will be ignored if provided as input parameters.
+          description: |
+            The resulting authorization token(s).
+            These are opaque to the client. These will be ignored if provided as input parameters.
           properties:
             edv:
               type: string
-              description: the authorization token to access the document in the vault. Opaque for the client.
+              description: The authorization token to access the document in the vault. Opaque for the client.
             kms:
-              description: the authorization to access the decryption key in the KMS for the document. Opaque to the client.
+              description: |
+                The authorization to access the decryption key in the KMS for the document. Opaque to the client.
               type: string
     Scope:
       type: object
